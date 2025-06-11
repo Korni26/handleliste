@@ -1,0 +1,52 @@
+@import url(../../variables.css);
+
+.control_panel {
+  background-color: #eee;
+  width: 40vw;
+  height: 10vh;
+  margin-top: 5vh;
+  padding: 0 var(--margin-md);
+  border-radius: var(--border-radius);
+  border: #aaa solid var(--border-width);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.adding_input {
+  display: flex;
+  align-items: center;
+}
+
+.control_panel input {
+  height: 60px;
+  font-size: 25px;
+  border-radius: var(--border-radius);
+  border: #aaa solid var(--border-width);
+  background-color: #fff;
+  color: #000;
+}
+
+.control_panel button {
+  width: 60px;
+  height: 60px;
+  font-size: 20px;
+  border-radius: 50%;
+  border: #aaa solid var(--border-width);
+}
+
+.control_panel .accept_button {
+  transform: rotate(45deg);
+  margin-left: var(--margin-md);
+  background-color: #aaa;
+}
+
+.control_panel .delete_button {
+  background-color: var(--color-delete);
+}
+
+@media (max-width: 1600px) {
+  .control_panel {
+    width: 80vw;
+  }
+}

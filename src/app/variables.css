@@ -1,0 +1,35 @@
+@property --border-radius {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 20px;
+}
+
+@property --border-width {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 2px;
+}
+
+@property --margin-md {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 20px;
+}
+
+@property --color-ok {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #03a63c;
+}
+
+@property --color-yellow {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #ffb30d;
+}
+
+@property --color-delete {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #d92525;
+}
