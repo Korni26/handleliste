@@ -43,6 +43,12 @@
 
 .control_panel .delete_button {
   background-color: var(--color-delete);
+  border-color: var(--color-delete);
+}
+
+.error_messages {
+  color: red;
+  margin-top: var(--margin-md);
 }
 
 @media (max-width: 1600px) {
