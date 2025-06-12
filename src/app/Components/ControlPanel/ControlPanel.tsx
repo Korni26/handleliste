@@ -5,7 +5,7 @@ import styles from "./ControlPanel.module.css";
 import { useCreateProduct } from "@/app/Hooks/useCreateProduct";
 
 type ControlPanelProps = {
-  addProduct: (product: Product) => void;
+  addProduct: (newProduct: Product) => void;
 };
 
 const ControlPanel = ({ addProduct }: ControlPanelProps) => {
@@ -28,12 +28,18 @@ const ControlPanel = ({ addProduct }: ControlPanelProps) => {
     setError("");
 
     try {
-      await useCreateProduct(productName);
-      setProductName("");
-    } catch (e) {
-      setError("Feilet å lagre produktet.");
-    }
+      const newProduct = await useCreateProduct(productName);
 
+      if (productName && newProduct?.id) {
+        const productToAdd = {
+          id: newProduct?.id,
+          name: productName,
+        };
+        addProduct(productToAdd);
+      }
+    } catch (error) {
+      setError("Feilet å lagre produktet: " + error);
+    }
     setIsLoading(false);
   };
 

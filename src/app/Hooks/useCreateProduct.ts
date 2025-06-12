@@ -7,8 +7,8 @@ const useCreateProduct = async (productName: string) => {
       name: productName,
     });
     return res;
-  } catch (e) {
-    console.error("Error:", e);
+  } catch (error) {
+    console.error("Error:", error);
   }
 };
 

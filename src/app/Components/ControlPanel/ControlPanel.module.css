@@ -25,6 +25,7 @@
   border: #aaa solid var(--border-width);
   background-color: #fff;
   color: #000;
+  padding-left: var(--margin-md);
 }
 
 .control_panel button {
@@ -33,6 +34,7 @@
   font-size: 20px;
   border-radius: 50%;
   border: #aaa solid var(--border-width);
+  cursor: pointer;
 }
 
 .control_panel .accept_button {

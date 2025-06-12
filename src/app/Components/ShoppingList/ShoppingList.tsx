@@ -1,17 +1,29 @@
 "use client";
 
+import { useDeleteProduct } from "@/app/Hooks/useDeleteProduct";
 import styles from "./ShoppingList.module.css";
 
-const ShoppingList = ({ products }: ProductList) => {
+type ShoppingListProps = {
+  products: Product[];
+  deleteProduct: (productId: string) => void;
+};
+
+const ShoppingList = ({ products, deleteProduct }: ShoppingListProps) => {
+  const handleDelete = (productId: string) => {
+    useDeleteProduct(productId);
+    deleteProduct(productId);
+  };
+
   return (
     <div className={styles.shopping_list}>
       <div className={styles.list_title}>
         <h1>Shopping list</h1>
       </div>
       <ul>
-        {products.map((product, index) => (
-          <li key={index}>
-            {product.name} <button>&#9932;</button>
+        {products.map((product) => (
+          <li key={product.id}>
+            {product.name}
+            <button onClick={() => handleDelete(product.id)}>&#9932;</button>
           </li>
         ))}
       </ul>

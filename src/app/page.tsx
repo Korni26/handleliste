@@ -13,6 +13,12 @@ export default function Home() {
     setShoppingProducts((prevProducts) => [...prevProducts, newProduct]);
   };
 
+  const deleteShoppingProduct = (productId: string) => {
+    setShoppingProducts((prevProducts) =>
+      prevProducts.filter((product) => product.id !== productId)
+    );
+  };
+
   const fetchdata = async () => {
     useGetData("products").then((products) => setShoppingProducts(products));
   };
@@ -23,8 +29,11 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <ShoppingList products={shoppingProducts} />
-      <ControlPanel  />
+      <ShoppingList
+        products={shoppingProducts}
+        deleteProduct={deleteShoppingProduct}
+      />
+      <ControlPanel addProduct={addShoppingProduct} />
     </div>
   );
 }
