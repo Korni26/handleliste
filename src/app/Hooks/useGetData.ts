@@ -3,9 +3,7 @@ import db from "../Utils/Firestore";
 
 const useGetData = async (collectionName: string) => {
   const querySnapshot = await getDocs(collection(db, collectionName));
-  return querySnapshot.docs.map(
-    (doc) => ({ ...doc.data(), id: doc.id } as Product)
-  );
+  return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 };
 
 export { useGetData };
