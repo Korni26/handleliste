@@ -1,0 +1,23 @@
+.header {
+  width: 100vw;
+  height: 10vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header button {
+  margin: var(--margin-md);
+  padding: 20px;
+  font-size: 20px;
+  color: #000;
+  border: #aaa solid var(--border-width);
+  background-color: #eee;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}
+
+.logo_icon {
+    padding: 20px;
+    font-size: 10vh;
+}

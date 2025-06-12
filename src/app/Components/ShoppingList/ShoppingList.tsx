@@ -17,7 +17,7 @@ const ShoppingList = ({ products, deleteProduct }: ShoppingListProps) => {
   return (
     <div className={styles.shopping_list}>
       <div className={styles.list_title}>
-        <h1>Shopping list</h1>
+        <h1>Handleliste</h1>
       </div>
       <ul>
         {products.map((product) => (
