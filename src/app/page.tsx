@@ -28,6 +28,7 @@ export default function Home() {
       const validProducts = products.map((product: any) => ({
         id: product.id,
         name: product.name ?? "",
+        isPurchased: product.isPurchased,
       }));
       setShoppingProducts(validProducts);
     });
@@ -47,7 +48,7 @@ export default function Home() {
         <>
           <Header />
           <ShoppingList
-            products={shoppingProducts}
+            initialProducts={shoppingProducts}
             deleteProduct={deleteShoppingProduct}
           />
           <ControlPanel addProduct={addShoppingProduct} />

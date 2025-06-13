@@ -17,7 +17,29 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-top: var(--margin-md);
+  position: relative;
+}
+
+.list_title .sort {
+  position: absolute;
+  right: 0;
+  padding: var(--margin-md);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 30px;
+    height: 30px;
+    margin: 10px;
+  }
+
+  input:checked {
+    background-color: red;
+  }
+
 }
 
 .shopping_list ul {
@@ -38,6 +60,19 @@
   font-size: 30px;
   padding: var(--margin-md);
   border-bottom: #aaa solid var(--border-width);
+}
+
+.shopping_list ul li .product_name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shopping_list ul li .checkbox {
+  height: 30px;
+  width: 30px;
+  position: relative;
+  margin-right: var(--margin-md);
 }
 
 .shopping_list ul li button {
