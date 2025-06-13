@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useGetData } from "./Hooks/useGetData";
 import { useAuth } from "./Hooks/useAuth";
 import { Header } from "./Components/Header/Header";
+import { SignInPanel } from "./Components/SIgnInPanel/SignInPanel";
+import { AccessDenied } from "./Components/AccessDenied/AccessDenied";
 
 export default function Home() {
   const [shoppingProducts, setShoppingProducts] = useState<Product[]>([]);
@@ -35,16 +37,9 @@ export default function Home() {
     fetchdata();
   }, []);
 
-  const { user, isValidUser, signIn, logout } = useAuth();
+  const { user, isValidUser } = useAuth();
 
-  if (user && !isValidUser) {
-    return (
-      <>
-        <h1>Du har ikke tilgang</h1>
-        <button onClick={logout}>Tilbake</button>
-      </>
-    );
-  }
+  if (user && !isValidUser) return <AccessDenied />;
 
   return (
     <div className={styles.page}>
@@ -58,12 +53,7 @@ export default function Home() {
           <ControlPanel addProduct={addShoppingProduct} />
         </>
       ) : (
-        <>
-          <p className={styles.logo_icon}>&#128717;</p>
-          <button className={styles.sign_in_button} onClick={signIn}>
-            Logg inn
-          </button>
-        </>
+        <SignInPanel />
       )}
     </div>
   );

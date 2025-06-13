@@ -7,17 +7,3 @@
   width: 100vw;
 }
 
-.logo_icon {
-  font-size: 150px;
-}
-
-.sign_in_button {
-  width: 200px;
-  font-size: 20px;
-  padding: 20px;
-  color: #000;
-  border: #aaa solid var(--border-width);
-  background-color: #eee;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-}
