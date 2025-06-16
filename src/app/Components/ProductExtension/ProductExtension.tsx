@@ -13,7 +13,6 @@ const ProductExtension = ({ productSearchResult }: ProductExtensionProps) => {
     const chosenProduct = productSearchResult.find(
       (product: ApiProductInfo) => product.id === Number(e.target.value)
     );
-    console.log(chosenProduct);
     setProductDescription(chosenProduct);
   };
 

@@ -23,14 +23,20 @@ export default function Home() {
     );
   };
 
+  const deleteShoppingList = () => {
+    setShoppingProducts([]);
+  };
+
   const fetchdata = async () => {
     useGetDatabaseData("products").then((products) => {
-      const validProducts = products.map((product: any) => ({
-        id: product.id,
-        name: product.name ?? "",
-        isPurchased: product.isPurchased,
-      }));
-      setShoppingProducts(validProducts);
+      if (products) {
+        const validProducts = products.map((product: any) => ({
+          id: product.id,
+          name: product.name ?? "",
+          isPurchased: product.isPurchased,
+        }));
+        setShoppingProducts(validProducts);
+      }
     });
   };
 
@@ -51,7 +57,10 @@ export default function Home() {
             initialProducts={shoppingProducts}
             deleteProduct={deleteShoppingProduct}
           />
-          <ControlPanel addProduct={addShoppingProduct} />
+          <ControlPanel
+            addProduct={addShoppingProduct}
+            deleteList={deleteShoppingList}
+          />
         </>
       ) : (
         <SignInPanel />

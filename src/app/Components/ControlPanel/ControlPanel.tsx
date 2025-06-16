@@ -1,20 +1,27 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import styles from "./ControlPanel.module.css";
 import { useCreateProduct } from "@/app/Hooks/useCreateProduct";
+import { useDeleteShoppingList } from "@/app/Hooks/useDeleteShoppingList";
 
 type ControlPanelProps = {
   addProduct: (newProduct: Product) => void;
+  deleteList: () => void;
 };
 
-const ControlPanel = ({ addProduct }: ControlPanelProps) => {
+const ControlPanel = ({ addProduct, deleteList }: ControlPanelProps) => {
   const [productName, setProductName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setProductName(e.target.value);
+  };
+
+  const handleDeleteList = () => {
+    useDeleteShoppingList();
+    deleteList();
   };
 
   const submitProduct = async (e: FormEvent) => {
@@ -34,6 +41,7 @@ const ControlPanel = ({ addProduct }: ControlPanelProps) => {
         const productToAdd = {
           id: newProduct?.id,
           name: productName,
+          isPurchased: false,
         };
         addProduct(productToAdd);
       }
@@ -55,7 +63,9 @@ const ControlPanel = ({ addProduct }: ControlPanelProps) => {
           />
           <button className={styles.accept_button}>&#9932;</button>
         </form>
-        <button className={styles.delete_button}>&#9932;</button>
+        <button onClick={handleDeleteList} className={styles.delete_button}>
+          &#9932;
+        </button>
       </div>
       <p className={styles.error_messages}>{error}</p>
       <p className={styles.error_messages}>{isLoading && "Laster..."}</p>
