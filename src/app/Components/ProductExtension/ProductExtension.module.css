@@ -1,0 +1,15 @@
+.product_extension {
+  width: 100%;
+  height: 10vh;
+
+  select {
+    max-width: 100%;
+    font-size: 30px;
+    background-color: #eee;
+    color: #000;
+    border: #aaa solid var(--border-width);
+    border-radius: var(--border-radius);
+    padding: var(--margin-md);
+    margin-bottom: 20px;
+  }
+}

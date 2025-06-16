@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "../Utils/Firestore";
-import { useGetData } from "./useGetData";
+import { useGetDatabaseData } from "./useGetDatabaseData";
 
 type ValidUser = {
   id: string;
@@ -21,7 +21,7 @@ const useAuth = () => {
   const [isValidUser, setIsValidUser] = useState(false);
 
   const validateUser = async () => {
-    const validUsers: ValidUser[] = await useGetData("validUsers");
+    const validUsers: ValidUser[] = await useGetDatabaseData("validUsers");
     if (user && user.email) {
       return validUsers.some((validUser) => validUser.email === user.email);
     }

@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 import { ShoppingList } from "./Components/ShoppingList/ShoppingList";
 import { ControlPanel } from "./Components/ControlPanel/ControlPanel";
 import { useEffect, useState } from "react";
-import { useGetData } from "./Hooks/useGetData";
+import { useGetDatabaseData } from "./Hooks/useGetDatabaseData";
 import { useAuth } from "./Hooks/useAuth";
 import { Header } from "./Components/Header/Header";
 import { SignInPanel } from "./Components/SIgnInPanel/SignInPanel";
@@ -24,7 +24,7 @@ export default function Home() {
   };
 
   const fetchdata = async () => {
-    useGetData("products").then((products) => {
+    useGetDatabaseData("products").then((products) => {
       const validProducts = products.map((product: any) => ({
         id: product.id,
         name: product.name ?? "",

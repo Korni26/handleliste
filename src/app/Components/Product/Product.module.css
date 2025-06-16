@@ -1,0 +1,57 @@
+.product {
+  width: 90%;
+  height: 10vh;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 30px;
+  padding: var(--margin-md);
+  border-bottom: #aaa solid var(--border-width);
+}
+
+.product_extended {
+  height: 25vh;
+  align-items: start;
+}
+
+.product .buttons {
+  height: 5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product button {
+  font-size: 30px;
+  border: none;
+  color: #000;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.product .downwards_arrow {
+  transform: rotate(90deg);
+  margin-right: 30px;
+}
+
+.product .upwards_arrow {
+  transform: rotate(-90deg);
+  margin-right: 30px;
+}
+
+.product .product_name {
+  height: 40px;
+  text-transform: capitalize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product .checkbox {
+  height: 30px;
+  width: 30px;
+  position: relative;
+  margin-right: var(--margin-md);
+}
+

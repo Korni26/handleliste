@@ -3,7 +3,8 @@
 import { useDeleteProduct } from "@/app/Hooks/useDeleteProduct";
 import styles from "./ShoppingList.module.css";
 import { useUpdateProduct } from "@/app/Hooks/useUpdateProduct";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Product } from "../Product/Product";
 
 type ShoppingListProps = {
   initialProducts: Product[];
@@ -16,6 +17,15 @@ const ShoppingList = ({
 }: ShoppingListProps) => {
   const [isSorted, setIsSorted] = useState(false);
   const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [isAllProductsPurchased, setIsAllProductsPurchased] = useState(false);
+
+  useEffect(() => {
+    setIsAllProductsPurchased(products.every((product) => product.isPurchased));
+  }, [products]);
+
+  useEffect(() => {
+    setProducts(initialProducts);
+  }, [initialProducts]);
 
   const handleDelete = (productId: string) => {
     useDeleteProduct(productId);
@@ -26,7 +36,7 @@ const ShoppingList = ({
     setIsSorted(e.target.checked);
   };
 
-  const hadnlePurchaseChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handlePurchaseChange = (e: ChangeEvent<HTMLInputElement>) => {
     const productId = e.target.id;
     const productPurchasedValue = e.target.checked;
 
@@ -48,7 +58,11 @@ const ShoppingList = ({
   });
 
   return (
-    <div className={styles.shopping_list}>
+    <div
+      className={`${styles.shopping_list} ${
+        isAllProductsPurchased && styles.all_products_purchased
+      }`}
+    >
       <div className={styles.list_title}>
         <h1>Handleliste</h1>
         <div className={styles.sort}>
@@ -58,19 +72,12 @@ const ShoppingList = ({
       </div>
       <ul>
         {(isSorted ? sortedPurchasedProducts : products).map((product) => (
-          <li key={product.id}>
-            <div className={styles.product_name}>
-              <input
-                type="checkbox"
-                className={styles.checkbox}
-                defaultChecked={product.isPurchased}
-                id={product.id}
-                onChange={(e) => hadnlePurchaseChange(e)}
-              />
-              {product.name}
-            </div>
-            <button onClick={() => handleDelete(product.id)}>&#9932;</button>
-          </li>
+          <Product
+            key={product.id}
+            product={product}
+            handlePurchaseChange={handlePurchaseChange}
+            handleDelete={handleDelete}
+          />
         ))}
       </ul>
     </div>
