@@ -37,7 +37,6 @@ const useAuth = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.email) {
         setUser(user);
-        console.log(user);
         validateUser().then((isValid) => setIsValidUser(!!isValid));
       } else {
         setUser(null);
