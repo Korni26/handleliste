@@ -3,6 +3,7 @@ import {
   onAuthStateChanged,
   signInWithPopup,
   signOut,
+  User,
 } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "../Utils/Firestore";
@@ -16,7 +17,7 @@ type ValidUser = {
 const provider = new GoogleAuthProvider();
 
 const useAuth = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isValidUser, setIsValidUser] = useState(false);
 
@@ -34,8 +35,9 @@ const useAuth = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+      if (user && user.email) {
         setUser(user);
+        console.log(user);
         validateUser().then((isValid) => setIsValidUser(!!isValid));
       } else {
         setUser(null);
