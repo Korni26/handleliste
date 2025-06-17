@@ -3,7 +3,6 @@
 .control_panel {
   background-color: #eee;
   width: 40vw;
-  height: 10vh;
   margin-top: 5vh;
   padding: 0 var(--margin-md);
   border-radius: var(--border-radius);
@@ -16,6 +15,13 @@
 .form {
   width: 100%;
   position: relative;
+  margin: 0 var(--margin-md) var(--margin-md) var(--margin-md);
+}
+
+.form label {
+  font-size: var(--font-size-md);
+  display: block;
+  margin: var(--margin-md);
 }
 
 .control_panel input {
@@ -41,6 +47,7 @@
   transform: rotate(45deg);
   margin-left: var(--margin-md);
   background-color: #aaa;
+  color: #000;
 }
 
 .control_panel .delete_button {
@@ -64,7 +71,7 @@
 @media (max-width: 700px) {
   .control_panel {
     height: 30vh;
-    display:unset;
+    display: unset;
     justify-content: start;
   }
 
@@ -72,6 +79,7 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    margin: 0;
   }
 
   .form input {
@@ -79,7 +87,8 @@
     margin: var(--margin-md) var(--margin-md) 0 var(--margin-md);
   }
 
-  .control_panel .delete_button, .control_panel .accept_button {
+  .control_panel .delete_button,
+  .control_panel .accept_button {
     position: unset;
     margin: var(--margin-md);
   }

@@ -21,7 +21,8 @@ const useAuth = () => {
   const [isValidUser, setIsValidUser] = useState(false);
 
   const validateUser = async () => {
-    const validUsers: ValidUser[] = await useGetDatabaseData("validUsers");
+    const validUsers: ValidUser[] =
+      (await useGetDatabaseData("validUsers")) || [];
     if (user && user.email) {
       return validUsers.some((validUser) => validUser.email === user.email);
     }

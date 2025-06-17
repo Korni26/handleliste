@@ -53,16 +53,27 @@
   width: 30px;
   position: relative;
   margin-right: var(--margin-md);
+  accent-color: var(--color-ok);
 }
 
 @media (max-width: 700px) {
-
   .product {
     align-content: flex-start;
+    min-height: 10vh;
+    position: relative;
+  }
+
+  .product .buttons {
+    position: absolute;
+    right: 0;
+  }
+
+  .product .downwards_arrow,
+  .product .upwards_arrow {
+    margin-right: 20px;
   }
 
   .product_extended {
     height: 40vh;
   }
-  
 }

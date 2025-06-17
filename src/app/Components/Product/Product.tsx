@@ -42,7 +42,8 @@ const Product = ({
           id={product.id}
           onChange={(e) => handlePurchaseChange(e)}
         />
-        {product.name}
+        <label htmlFor={product.id}>{product.name}</label>
+        
       </div>
       <div className={styles.buttons}>
         <button

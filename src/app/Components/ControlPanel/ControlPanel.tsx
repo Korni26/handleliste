@@ -15,7 +15,7 @@ const ControlPanel = ({ addProduct, deleteList }: ControlPanelProps) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const HandleDeleteList = () => {
+  const handleDeleteList = () => {
     useDeleteShoppingList();
     deleteList();
   };
@@ -55,18 +55,26 @@ const ControlPanel = ({ addProduct, deleteList }: ControlPanelProps) => {
     <>
       <div className={styles.control_panel}>
         <form onSubmit={submitProduct} className={styles.form}>
+          <label htmlFor="product_input">Legg til et produkt:</label>
           <input
+            maxLength={30}
+            id="product_input"
             type="text"
             placeholder="Produktnavn"
             value={productName}
             onChange={handleInputChange}
           />
-          <button type="submit" className={styles.accept_button}>&#9932;</button>
-          <button type="button" onClick={HandleDeleteList} className={styles.delete_button}>
-          &#9932;
-        </button>
+          <button type="submit" className={styles.accept_button}>
+            &#9932;
+          </button>
+          <button
+            type="button"
+            onClick={handleDeleteList}
+            className={styles.delete_button}
+          >
+            &#9932;
+          </button>
         </form>
-        
       </div>
       <p className={styles.error_messages}>{error}</p>
       <p className={styles.error_messages}>{isLoading && "Laster..."}</p>

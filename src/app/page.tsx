@@ -30,7 +30,7 @@ export default function Home() {
   const fetchdata = async () => {
     useGetDatabaseData("products").then((products) => {
       if (products) {
-        const validProducts = products.map((product: any) => ({
+        const validProducts = (products as Product[]).map((product) => ({
           id: product.id,
           name: product.name ?? "",
           isPurchased: product.isPurchased,
@@ -44,9 +44,9 @@ export default function Home() {
     fetchdata();
   }, []);
 
-  const { user, isValidUser } = useAuth();
+  const { user, isValidUser, loading } = useAuth();
 
-  if (user && !isValidUser) return <AccessDenied />;
+  if (user && !loading && !isValidUser) return <AccessDenied />;
 
   return (
     <div className={styles.page}>

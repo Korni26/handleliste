@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <button onClick={logout}>Logg ut </button>
-      <p className={styles.logo_icon}>&#128717;</p>
+      <p aria-label="Shopping bags icon" className={styles.logo_icon}>&#128717;</p>
     </header>
   );
 };

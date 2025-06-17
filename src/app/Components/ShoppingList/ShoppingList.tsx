@@ -60,7 +60,9 @@ const ShoppingList = ({
   return (
     <div
       className={`${styles.shopping_list} ${
-        isAllProductsPurchased && styles.all_products_purchased
+        isAllProductsPurchased &&
+        products.length > 0 &&
+        styles.all_products_purchased
       }`}
     >
       <div className={styles.list_title}>
