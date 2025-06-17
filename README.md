@@ -1,39 +1,47 @@
 # handleliste
-Handleliste er en webapplikasjon utviklet med Next.js, som jeg har laget i løpet av min fagprøve.
+This project is a web application designed to provide an easily accessible way to store products that need to be purchased. It also allows users to easily check the prices of items. Additionally, the project includes authentication and authorization features.
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Project Setup Instructions
 
-## Getting Started
+To set up the project on your own, you can either follow the README.md file located in the repository on GitHub or follow the instructions below.
 
-First, run the development server:
+## Required Setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This project requires a working Firebase Firestore Database with two collections named `products` and `validUsers`. In the `validUsers` collection, you should add the approved email addresses that will have access to the application, using the field `email`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Steps to Set Up the Project
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository from GitHub to your code editor. The repository can be found at: [https://github.com/Korni26/handleliste](https://github.com/Korni26/handleliste).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Open your terminal at the location where the repository was cloned and run the command: `npm install`
 
-## Learn More
+3. Create a `.env.local` file in the same directory.
 
-To learn more about Next.js, take a look at the following resources:
+4. In the `.env.local` file, add the necessary environment variables for the project. You can find all the required values in your project settings in Firebase. The setup should look like this:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain` 
 
-## Deploy on Vercel
+`NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id` 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket` 
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id` 
+
+`NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id`
+
+5. In the same file, you can also add an additional variable for the API key that you need to create in one of Kassalap's pages. This should be added with the following variable name:
+ `NEXT_PUBLIC_API_TOKEN=your_kassalap_api_key`
+
+6. Run the application locally by executing the command: `npm run dev`
+
+This will start the application on one of the available ports.
+
+7. Finally, open your browser and navigate to: `http://localhost:{port_number}`
+
+Replace `{port_number}` with the port number on which the application is running.
+
+## Result
+Your project should now be running locally.
+
