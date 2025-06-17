@@ -5,7 +5,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  font-size: 30px;
+  font-size: var(--font-size-lg);
   padding: var(--margin-md);
   border-bottom: #aaa solid var(--border-width);
 }
@@ -23,7 +23,7 @@
 }
 
 .product button {
-  font-size: 30px;
+  font-size: var(--font-size-lg);
   border: none;
   color: #000;
   background-color: transparent;
@@ -55,3 +55,14 @@
   margin-right: var(--margin-md);
 }
 
+@media (max-width: 700px) {
+
+  .product {
+    align-content: flex-start;
+  }
+
+  .product_extended {
+    height: 40vh;
+  }
+  
+}

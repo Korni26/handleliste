@@ -13,3 +13,16 @@
     margin-bottom: 20px;
   }
 }
+
+@media (max-width: 700px) {
+
+  .product_extension select {
+    margin-top: var(--margin-md);
+    font-size: var(--font-size-md);
+  }
+
+  .product_extension h3 {
+    font-size: var(--font-size-md);
+    margin-bottom: var(--margin-md);
+  }
+}

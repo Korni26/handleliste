@@ -13,9 +13,9 @@
   justify-content: space-between;
 }
 
-.adding_input {
-  display: flex;
-  align-items: center;
+.form {
+  width: 100%;
+  position: relative;
 }
 
 .control_panel input {
@@ -46,6 +46,8 @@
 .control_panel .delete_button {
   background-color: var(--color-delete);
   border-color: var(--color-delete);
+  position: absolute;
+  right: 0;
 }
 
 .error_messages {
@@ -56,5 +58,29 @@
 @media (max-width: 1600px) {
   .control_panel {
     width: 80vw;
+  }
+}
+
+@media (max-width: 700px) {
+  .control_panel {
+    height: 30vh;
+    display:unset;
+    justify-content: start;
+  }
+
+  .form {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .form input {
+    width: 100%;
+    margin: var(--margin-md) var(--margin-md) 0 var(--margin-md);
+  }
+
+  .control_panel .delete_button, .control_panel .accept_button {
+    position: unset;
+    margin: var(--margin-md);
   }
 }

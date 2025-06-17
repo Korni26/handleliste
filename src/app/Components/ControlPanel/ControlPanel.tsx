@@ -15,13 +15,13 @@ const ControlPanel = ({ addProduct, deleteList }: ControlPanelProps) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setProductName(e.target.value);
-  };
-
-  const handleDeleteList = () => {
+  const HandleDeleteList = () => {
     useDeleteShoppingList();
     deleteList();
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setProductName(e.target.value);
   };
 
   const submitProduct = async (e: FormEvent) => {
@@ -54,18 +54,19 @@ const ControlPanel = ({ addProduct, deleteList }: ControlPanelProps) => {
   return (
     <>
       <div className={styles.control_panel}>
-        <form onSubmit={submitProduct} className={styles.adding_input}>
+        <form onSubmit={submitProduct} className={styles.form}>
           <input
             type="text"
             placeholder="Produktnavn"
             value={productName}
             onChange={handleInputChange}
           />
-          <button className={styles.accept_button}>&#9932;</button>
-        </form>
-        <button onClick={handleDeleteList} className={styles.delete_button}>
+          <button type="submit" className={styles.accept_button}>&#9932;</button>
+          <button type="button" onClick={HandleDeleteList} className={styles.delete_button}>
           &#9932;
         </button>
+        </form>
+        
       </div>
       <p className={styles.error_messages}>{error}</p>
       <p className={styles.error_messages}>{isLoading && "Laster..."}</p>

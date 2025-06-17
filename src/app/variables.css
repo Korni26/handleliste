@@ -33,3 +33,21 @@
   inherits: false;
   initial-value: #d92525;
 }
+
+@property --font-size-lg {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 30px;
+}
+
+@property --font-size-md {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 20px;
+}
+
+@property --font-size-sm {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 10px;
+}
