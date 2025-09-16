@@ -3,17 +3,19 @@ import styles from "./ProductExtension.module.css";
 
 type ProductExtensionProps = {
   productSearchResult: ApiProductInfo[];
+  chosenProduct: ApiProductInfo | undefined
+  setChosenProduct: (product: ApiProductInfo ) => void
 };
 
-const ProductExtension = ({ productSearchResult }: ProductExtensionProps) => {
-  const [productDescription, setProductDescription] =
-    useState<ApiProductInfo>();
+const ProductExtension = ({ productSearchResult, chosenProduct, setChosenProduct }: ProductExtensionProps) => {
 
   const hadnleSelectChange = async (e: ChangeEvent<HTMLSelectElement>) => {
     const chosenProduct = productSearchResult.find(
       (product: ApiProductInfo) => product.id === Number(e.target.value)
     );
-    setProductDescription(chosenProduct);
+    if (chosenProduct) {
+      setChosenProduct(chosenProduct)
+    }
   };
 
   return (
@@ -28,12 +30,12 @@ const ProductExtension = ({ productSearchResult }: ProductExtensionProps) => {
           ))}
       </select>
 
-      {productDescription && (
+      {chosenProduct && (
         <>
-          <h3>{productDescription.name}</h3>
+          <h3>{chosenProduct.name}</h3>
           <p>
-            {productDescription.store.name} - {""}
-            {productDescription.current_price} kr
+            {chosenProduct.store.name} - {""}
+            {chosenProduct.current_price} kr
           </p>
         </>
       )}

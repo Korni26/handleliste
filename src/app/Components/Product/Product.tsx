@@ -18,6 +18,7 @@ const Product = ({
   const [productSearchResult, setProductSearchResult] = useState<
     ApiProductInfo[]
   >([]);
+  const [chosenProduct, setChosenProduct] = useState<ApiProductInfo>()
 
   const handleProductExtended = async () => {
     setIsProductExtended((prevState) => !prevState);
@@ -57,7 +58,7 @@ const Product = ({
         <button onClick={() => handleDelete(product.id)}>&#9932;</button>
       </div>
       {isProductExtended && (
-        <ProductExtension productSearchResult={productSearchResult} />
+        <ProductExtension productSearchResult={productSearchResult} chosenProduct={chosenProduct} setChosenProduct={setChosenProduct} />
       )}
     </li>
   );
