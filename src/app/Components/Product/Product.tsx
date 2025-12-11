@@ -47,14 +47,6 @@ const Product = ({
         
       </div>
       <div className={styles.buttons}>
-        <button
-          className={`${
-            isProductExtended ? styles.upwards_arrow : styles.downwards_arrow
-          }`}
-          onClick={handleProductExtended}
-        >
-          &#10140;
-        </button>
         <button onClick={() => handleDelete(product.id)}>&#9932;</button>
       </div>
       {isProductExtended && (
