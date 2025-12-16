@@ -55,7 +55,9 @@ const ControlPanel = ({ addProduct, deleteList }: ControlPanelProps) => {
     <>
       <div className={styles.control_panel}>
         <form onSubmit={submitProduct} className={styles.form}>
-          <label htmlFor="product_input">Legg til et produkt:</label>
+          <p className={styles.error_messages}>{error}</p>
+          <p className={styles.error_messages}>{isLoading && "Laster..."}</p>
+
           <input
             maxLength={30}
             id="product_input"
@@ -64,20 +66,14 @@ const ControlPanel = ({ addProduct, deleteList }: ControlPanelProps) => {
             value={productName}
             onChange={handleInputChange}
           />
+
           <button type="submit" className={styles.accept_button}>
             &#9932;
           </button>
-          <button
-            type="button"
-            onClick={handleDeleteList}
-            className={styles.delete_button}
-          >
-            &#9932;
-          </button>
+
+          {/* removed delete list button, i want to move it do a different place */}
         </form>
       </div>
-      <p className={styles.error_messages}>{error}</p>
-      <p className={styles.error_messages}>{isLoading && "Laster..."}</p>
     </>
   );
 };
