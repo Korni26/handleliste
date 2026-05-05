@@ -5,19 +5,28 @@ import styles from "./ShoppingList.module.css";
 import { useUpdateProduct } from "@/app/Hooks/useUpdateProduct";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Product } from "../Product/Product";
+import { useDeleteShoppingList } from "@/app/Hooks/useDeleteShoppingList";
 
 type ShoppingListProps = {
   initialProducts: Product[];
   deleteProduct: (productId: string) => void;
+  deleteList: () => void;
 };
 
 const ShoppingList = ({
   initialProducts,
   deleteProduct,
+  deleteList
 }: ShoppingListProps) => {
   const [isSorted, setIsSorted] = useState(false);
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isAllProductsPurchased, setIsAllProductsPurchased] = useState(false);
+
+  const handleDeleteList = () => {
+    useDeleteShoppingList();
+    deleteList();
+  };
+
 
   useEffect(() => {
     setIsAllProductsPurchased(products.every((product) => product.isPurchased));
@@ -71,6 +80,14 @@ const ShoppingList = ({
           <input onChange={handleSortChange} id="sort" type="checkbox" />
           <label htmlFor="sort">Sorter</label>
         </div>
+                  <button
+            type="button"
+            onClick={handleDeleteList}
+            className={styles.delete_button}
+          >
+            Slett
+          </button>
+
       </div>
       <ul>
         {(isSorted ? sortedPurchasedProducts : products).map((product) => (

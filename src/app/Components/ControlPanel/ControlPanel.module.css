@@ -1,95 +1,161 @@
 @import url(../../variables.css);
 
 .control_panel {
-  background-color: #eee;
-  width: 40vw;
-  margin-top: 5vh;
-  padding: 0 var(--margin-md);
-  border-radius: var(--border-radius);
-  border: #aaa solid var(--border-width);
+  background-color: #FFFAEC;            /* darker than #f7f7f8 */
+  max-width: 480px;
+  width: 100%;
+  margin: 5vh auto 0 auto;
+  padding: var(--margin-md);
+  border-radius: calc(var(--border-radius) * 1.5);
+  border: 1px solid #9ca3af;           /* visible on white */
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--margin-md);
+}
+
+.control_panel,
+.control_panel * {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
 }
 
 .form {
-  width: 100%;
+  flex: 1 1 auto;
   position: relative;
-  margin: 0 var(--margin-md) var(--margin-md) var(--margin-md);
+  margin: 0;
 }
 
 .form label {
-  font-size: var(--font-size-md);
+  font-size: 0.85rem;
+  font-weight: 600;
   display: block;
-  margin: var(--margin-md);
+  margin: 0 0 calc(var(--margin-md) / 4) 0;
+  color: #171717;                      /* darker label */
 }
 
 .control_panel input {
-  height: 60px;
-  font-size: 25px;
-  border-radius: var(--border-radius);
-  border: #aaa solid var(--border-width);
-  background-color: #fff;
-  color: #000;
-  padding-left: var(--margin-md);
+  width: 100%;
+  height: 48px;
+  font-size: 1rem;
+  border-radius: calc(var(--border-radius) * 1.5);
+  border: 1px solid #6b7280;           /* stronger border */
+  background-color: #FFFAEC;
+  color: #171717;
+  padding: 0 var(--margin-md);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
 }
 
+.control_panel input::placeholder {
+  color: #6b7280;                      /* darker placeholder */
+}
+
+.control_panel input:focus {
+  border-color: #1d4ed8;               /* deeper blue */
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.4);
+}
+
+/* Base button */
 .control_panel button {
-  width: 60px;
-  height: 60px;
-  font-size: 20px;
-  border-radius: 50%;
-  border: #aaa solid var(--border-width);
+  width: 100%;
+  height: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  margin-left: 0px;
+  font-size: 1.1rem;
+  border-radius: 999px;
+  border: 1px solid #4b5563;           /* clear outline */
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e5e7eb;
+  color: #111827;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
 }
 
+.control_panel button:hover {
+  background-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3);
+}
+
+.control_panel button:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.35);
+}
+
+/* Accept button */
 .control_panel .accept_button {
-  transform: rotate(45deg);
-  margin-left: var(--margin-md);
-  background-color: #aaa;
-  color: #000;
+  margin-top: var(--margin-md);
+  background-color: var(--color-ok, #15803d);        /* darker green */
+  border-color: var(--color-ok, #166534);
+  color: #f9fafb;
 }
 
-.control_panel .delete_button {
-  background-color: var(--color-delete);
-  border-color: var(--color-delete);
-  position: absolute;
-  right: 0;
+.control_panel .accept_button:hover {
+  background-color: #166534;
 }
+
 
 .error_messages {
-  color: red;
-  margin-top: var(--margin-md);
+  color: #b91c1c;
+  margin-top: calc(var(--margin-md) / 2);
+  font-size: 0.85rem;
 }
 
-@media (max-width: 1600px) {
+/* Desktop */
+@media (min-width: 768px) {
   .control_panel {
-    width: 80vw;
+    flex-direction: row;
+    align-items: center;
+    padding: calc(var(--margin-md) * 1.25);
   }
-}
-
-@media (max-width: 700px) {
-  .control_panel {
-    height: 30vh;
-    display: unset;
-    justify-content: start;
-  }
-
   .form {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
     margin: 0;
   }
+}
 
-  .form input {
-    width: 100%;
-    margin: var(--margin-md) var(--margin-md) 0 var(--margin-md);
+/* Mobile */
+@media (max-width: 767px) {
+  .control_panel {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 90%;
+    margin-top: 3vh;
   }
 
-  .control_panel .delete_button,
+  .control_panel input {
+    height: 52px;
+  }
+
+  .control_panel .accept_button,
+  .control_panel .delete_button {
+    width: 100%;
+    border-radius: calc(var(--border-radius) * 1.5);
+  }
+
   .control_panel .accept_button {
-    position: unset;
-    margin: var(--margin-md);
+    margin-left: 0;
+    margin-top: var(--margin-md);
+  }
+
+  .control_panel .delete_button {
+    margin-top: calc(var(--margin-md) / 2);
+  }
+}
+
+/* Very large */
+@media (min-width: 1600px) {
+  .control_panel {
+    max-width: 640px;
   }
 }

@@ -56,10 +56,10 @@ export default function Home() {
           <ShoppingList
             initialProducts={shoppingProducts}
             deleteProduct={deleteShoppingProduct}
+            deleteList={deleteShoppingList}
           />
           <ControlPanel
             addProduct={addShoppingProduct}
-            deleteList={deleteShoppingList}
           />
         </>
       ) : (

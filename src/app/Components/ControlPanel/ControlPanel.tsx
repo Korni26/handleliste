@@ -7,18 +7,12 @@ import { useDeleteShoppingList } from "@/app/Hooks/useDeleteShoppingList";
 
 type ControlPanelProps = {
   addProduct: (newProduct: Product) => void;
-  deleteList: () => void;
 };
 
-const ControlPanel = ({ addProduct, deleteList }: ControlPanelProps) => {
+const ControlPanel = ({ addProduct }: ControlPanelProps) => {
   const [productName, setProductName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleDeleteList = () => {
-    useDeleteShoppingList();
-    deleteList();
-  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setProductName(e.target.value);
@@ -65,13 +59,6 @@ const ControlPanel = ({ addProduct, deleteList }: ControlPanelProps) => {
             onChange={handleInputChange}
           />
           <button type="submit" className={styles.accept_button}>
-            &#9932;
-          </button>
-          <button
-            type="button"
-            onClick={handleDeleteList}
-            className={styles.delete_button}
-          >
             &#9932;
           </button>
         </form>

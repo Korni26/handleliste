@@ -47,19 +47,19 @@ const Product = ({
         
       </div>
       <div className={styles.buttons}>
-        <button
+        {/* <button
           className={`${
             isProductExtended ? styles.upwards_arrow : styles.downwards_arrow
           }`}
           onClick={handleProductExtended}
         >
           &#10140;
-        </button>
+        </button> */}
         <button onClick={() => handleDelete(product.id)}>&#9932;</button>
       </div>
-      {isProductExtended && (
+      {/* {isProductExtended && (
         <ProductExtension productSearchResult={productSearchResult} chosenProduct={chosenProduct} setChosenProduct={setChosenProduct} />
-      )}
+      )} */}
     </li>
   );
 };
