@@ -1,13 +1,16 @@
-import { collection, deleteDoc, getDocs } from "firebase/firestore";
+import { collection, getDocs, writeBatch } from "firebase/firestore";
 import db from "../Utils/Firestore";
 
-const useDeleteShoppingList = async () => {
-  try {
-    const querySnapshot = await getDocs(collection(db, "products"));
-    return querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
-  } catch (error) {
-    console.error("Feilet å slette handlelisten: ", error);
+const deleteShoppingListFromDatabase = async () => {
+  const snapshot = await getDocs(collection(db, "products"));
+  // Firestore batches permit at most 500 write operations.
+  for (let index = 0; index < snapshot.docs.length; index += 500) {
+    const batch = writeBatch(db);
+    snapshot.docs.slice(index, index + 500).forEach((product) => {
+      batch.delete(product.ref);
+    });
+    await batch.commit();
   }
 };
 
-export { useDeleteShoppingList };
+export { deleteShoppingListFromDatabase };

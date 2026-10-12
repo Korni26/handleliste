@@ -1,67 +1,36 @@
-import { ChangeEvent, useState } from "react";
 import styles from "./Product.module.css";
-import { useGetApiData } from "@/app/Hooks/useGetApiData";
-import { ProductExtension } from "../ProductExtension/ProductExtension";
 
 type ProductProps = {
   product: Product;
-  handlePurchaseChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+  handlePurchaseChange: (productId: string, purchased: boolean) => void;
   handleDelete: (productId: string) => void;
 };
 
-const Product = ({
-  product,
-  handlePurchaseChange,
-  handleDelete,
-}: ProductProps) => {
-  const [isProductExtended, setIsProductExtended] = useState(false);
-  const [productSearchResult, setProductSearchResult] = useState<
-    ApiProductInfo[]
-  >([]);
-  const [chosenProduct, setChosenProduct] = useState<ApiProductInfo>()
-
-  const handleProductExtended = async () => {
-    setIsProductExtended((prevState) => !prevState);
-    if (productSearchResult.length === 0) {
-      const apiData = await useGetApiData(product.name);
-      setProductSearchResult(apiData.data);
-    }
-  };
-
-  return (
-    <li
-      key={product.id}
-      className={`${styles.product} ${
-        isProductExtended && styles.product_extended
-      } `}
-    >
-      <div className={styles.product_name}>
-        <input
-          type="checkbox"
-          className={styles.checkbox}
-          defaultChecked={product.isPurchased}
-          id={product.id}
-          onChange={(e) => handlePurchaseChange(e)}
-        />
-        <label htmlFor={product.id}>{product.name}</label>
-        
-      </div>
-      <div className={styles.buttons}>
-        {/* <button
-          className={`${
-            isProductExtended ? styles.upwards_arrow : styles.downwards_arrow
-          }`}
-          onClick={handleProductExtended}
-        >
-          &#10140;
-        </button> */}
-        <button onClick={() => handleDelete(product.id)}>&#9932;</button>
-      </div>
-      {/* {isProductExtended && (
-        <ProductExtension productSearchResult={productSearchResult} chosenProduct={chosenProduct} setChosenProduct={setChosenProduct} />
-      )} */}
-    </li>
-  );
-};
+const Product = ({ product, disabled = false, handlePurchaseChange, handleDelete }: ProductProps) => (
+  <li className={styles.product}>
+    <div className={styles.product_name}>
+      <input
+        type="checkbox"
+        className={styles.checkbox}
+        checked={!!product.isPurchased}
+        id={product.id}
+        disabled={disabled}
+        onChange={(event) => handlePurchaseChange(product.id, event.target.checked)}
+      />
+      <label htmlFor={product.id}>{product.name}</label>
+    </div>
+    <div className={styles.buttons}>
+      <button
+        type="button"
+        disabled={disabled}
+        aria-label={`Slett ${product.name}`}
+        onClick={() => handleDelete(product.id)}
+      >
+        &#9932;
+      </button>
+    </div>
+  </li>
+);
 
 export { Product };
