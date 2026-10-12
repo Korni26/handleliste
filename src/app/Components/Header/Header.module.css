@@ -1,23 +1,26 @@
 .header {
-  width: 100vw;
-  height: 10vh;
+  width: min(100%, 760px);
+  min-height: 80px;
+  padding: 12px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
 }
-
 .header button {
-  margin: var(--margin-md);
-  padding: 20px;
-  font-size: 20px;
-  color: #000;
-  border: #aaa solid var(--border-width);
-  background-color: #eee;
-  border-radius: var(--border-radius);
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #25362c;
+  background: #fff;
+  border: 1px solid #cbd8ce;
+  border-radius: 12px;
   cursor: pointer;
 }
-
-.logo_icon {
-  margin: 20px;
-  font-size: 10vh;
+.header button:hover { background: #edf5ed; }
+.header button:focus-visible { outline: 3px solid #32764b; outline-offset: 3px; }
+.logo_icon { font-size: 2.5rem; margin: 0; }
+@media (max-width: 480px) {
+  .header { min-height: 64px; }
+  .logo_icon { font-size: 2rem; }
 }
