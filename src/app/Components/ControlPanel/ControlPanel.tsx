@@ -2,7 +2,7 @@
 
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import styles from "./ControlPanel.module.css";
-import { createProduct } from "@/app/Hooks/createProduct";
+import { createProduct } from "@/app/Hooks/useCreateProduct";
 
 type ControlPanelProps = {
   addProduct: (newProduct: Product) => void;
