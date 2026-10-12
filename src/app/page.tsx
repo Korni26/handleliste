@@ -27,26 +27,27 @@ export default function Home() {
     setShoppingProducts([]);
   };
 
-  const fetchdata = async () => {
-    useGetDatabaseData("products").then((products) => {
-      if (products) {
-        const validProducts = (products as Product[]).map((product) => ({
-          id: product.id,
-          name: product.name ?? "",
-          isPurchased: product.isPurchased,
-        }));
-        setShoppingProducts(validProducts);
-      }
-    });
-  };
-
-  useEffect(() => {
-    fetchdata();
-  }, []);
-
   const { user, isValidUser, loading } = useAuth();
 
-  if (user && !loading && !isValidUser) return <AccessDenied />;
+  useEffect(() => {
+    if (loading || !isValidUser) {
+      setShoppingProducts([]);
+      return;
+    }
+    let active = true;
+    useGetDatabaseData("products").then((products) => {
+      if (!active || !products) return;
+      setShoppingProducts((products as Product[]).map((product) => ({
+        id: product.id,
+        name: product.name ?? "",
+        isPurchased: !!product.isPurchased,
+      })));
+    });
+    return () => { active = false; };
+  }, [loading, isValidUser]);
+
+  if (loading) return <div className={styles.page} role="status">Laster...</div>;
+  if (user && !isValidUser) return <AccessDenied />;
 
   return (
     <div className={styles.page}>
