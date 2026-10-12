@@ -1,8 +1,8 @@
 "use client";
 
-import { useDeleteProduct } from "@/app/Hooks/useDeleteProduct";
-import { useUpdateProduct } from "@/app/Hooks/useUpdateProduct";
-import { useDeleteShoppingList } from "@/app/Hooks/useDeleteShoppingList";
+import { deleteProductFromDatabase } from "@/app/Hooks/deleteProductFromDatabase";
+import { updateProductInDatabase } from "@/app/Hooks/updateProductInDatabase";
+import { deleteShoppingListFromDatabase } from "@/app/Hooks/deleteShoppingListFromDatabase";
 import styles from "./ShoppingList.module.css";
 import { useEffect, useState } from "react";
 import { Product } from "../Product/Product";
@@ -29,7 +29,7 @@ const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteLis
     setIsClearing(true);
     setError("");
     try {
-      await useDeleteShoppingList();
+      await deleteShoppingListFromDatabase();
       deleteList();
     } catch (err) {
       console.error("Kunne ikke slette handlelisten:", err);
@@ -44,7 +44,7 @@ const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteLis
     setBusyIds((prev) => [...prev, productId]);
     setError("");
     try {
-      await useDeleteProduct(productId);
+      await deleteProductFromDatabase(productId);
       deleteProduct(productId);
     } catch (err) {
       console.error("Kunne ikke slette produktet:", err);
@@ -59,7 +59,7 @@ const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteLis
     setBusyIds((prev) => [...prev, productId]);
     setError("");
     try {
-      await useUpdateProduct(productId, purchased);
+      await updateProductInDatabase(productId, purchased);
       updateProduct(productId, purchased);
     } catch (err) {
       console.error("Kunne ikke oppdatere produktet:", err);
