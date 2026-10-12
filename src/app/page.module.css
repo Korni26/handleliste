@@ -5,6 +5,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 0 16px 48px;
-  background: linear-gradient(160deg, #f8faf8 0%, #eef4ee 100%);
+  padding: 0 clamp(12px, 4vw, 32px) 56px;
+  background: var(--background);
 }
