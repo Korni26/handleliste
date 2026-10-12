@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 import { ShoppingList } from "./Components/ShoppingList/ShoppingList";
 import { ControlPanel } from "./Components/ControlPanel/ControlPanel";
 import { useEffect, useState } from "react";
-import { getDatabaseData } from "./Hooks/getDatabaseData";
+import { getDatabaseData } from "./Hooks/useGetDatabaseData";
 import { useAuth } from "./Hooks/useAuth";
 import { Header } from "./Components/Header/Header";
 import { SignInPanel } from "./Components/SIgnInPanel/SignInPanel";
