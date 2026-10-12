@@ -10,10 +10,11 @@ import { Product } from "../Product/Product";
 type ShoppingListProps = {
   initialProducts: Product[];
   deleteProduct: (productId: string) => void;
+  updateProduct: (productId: string, isPurchased: boolean) => void;
   deleteList: () => void;
 };
 
-const ShoppingList = ({ initialProducts, deleteProduct, deleteList }: ShoppingListProps) => {
+const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteList }: ShoppingListProps) => {
   const [isSorted, setIsSorted] = useState(false);
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [busyIds, setBusyIds] = useState<string[]>([]);
@@ -59,10 +60,7 @@ const ShoppingList = ({ initialProducts, deleteProduct, deleteList }: ShoppingLi
     setError("");
     try {
       await useUpdateProduct(productId, purchased);
-      setProducts((prev) =>
-        prev.map((product) => product.id === productId
-          ? { ...product, isPurchased: purchased } : product)
-      );
+      updateProduct(productId, purchased);
     } catch (err) {
       console.error("Kunne ikke oppdatere produktet:", err);
       setError("Kunne ikke oppdatere produktet. Prøv igjen.");
