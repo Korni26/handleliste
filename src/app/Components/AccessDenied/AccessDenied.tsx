@@ -6,10 +6,11 @@ const AccessDenied = () => {
 
   return (
     <section className={styles.access_denied}>
-      <p aria-label="Shopping bags icon" className={styles.logo_icon}>&#128717;</p>
-      <h1 >Du har ikke tilgang :(</h1>
-      <button className={styles.logout_button} onClick={logout}>
-        Tilbake
+      <span aria-hidden="true" className={styles.logo_icon}>🔒</span>
+      <h1>Du har ikke tilgang</h1>
+      <p>Denne handlelisten er bare tilgjengelig for godkjente brukere.</p>
+      <button type="button" className={styles.logout_button} onClick={logout}>
+        Logg ut og prøv en annen konto
       </button>
     </section>
   );

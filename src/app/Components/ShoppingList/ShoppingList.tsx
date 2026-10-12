@@ -79,6 +79,7 @@ const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteLis
     <div className={`${styles.shopping_list} ${allPurchased ? styles.all_products_purchased : ""}`}>
       <div className={styles.list_title}>
         <h1>Handleliste</h1>
+        <p className={styles.count}>{products.filter((product) => !product.isPurchased).length} igjen å handle</p>
         <div className={styles.sort}>
           <input
             id="sort"
@@ -86,7 +87,7 @@ const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteLis
             checked={isSorted}
             onChange={(event) => setIsSorted(event.target.checked)}
           />
-          <label htmlFor="sort">Sorter</label>
+          <label htmlFor="sort">Vis ikke-kjøpte først</label>
         </div>
         <button
           type="button"
