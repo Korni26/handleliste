@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 import { ShoppingList } from "./Components/ShoppingList/ShoppingList";
 import { ControlPanel } from "./Components/ControlPanel/ControlPanel";
 import { useEffect, useState } from "react";
-import { useGetDatabaseData } from "./Hooks/useGetDatabaseData";
+import { getDatabaseData } from "./Hooks/getDatabaseData";
 import { useAuth } from "./Hooks/useAuth";
 import { Header } from "./Components/Header/Header";
 import { SignInPanel } from "./Components/SIgnInPanel/SignInPanel";
@@ -39,7 +39,7 @@ export default function Home() {
       return;
     }
     let active = true;
-    useGetDatabaseData("products").then((products) => {
+    getDatabaseData("products").then((products) => {
       if (!active || !products) return;
       setShoppingProducts((products as Product[]).map((product) => ({
         id: product.id,
