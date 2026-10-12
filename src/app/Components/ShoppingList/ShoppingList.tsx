@@ -1,8 +1,8 @@
 "use client";
 
-import { deleteProductFromDatabase } from "@/app/Hooks/deleteProductFromDatabase";
-import { updateProductInDatabase } from "@/app/Hooks/updateProductInDatabase";
-import { deleteShoppingListFromDatabase } from "@/app/Hooks/deleteShoppingListFromDatabase";
+import { deleteProductFromDatabase } from "@/app/Hooks/useDeleteProduct";
+import { updateProductInDatabase } from "@/app/Hooks/useUpdateProduct";
+import { deleteShoppingListFromDatabase } from "@/app/Hooks/useDeleteShoppingList";
 import styles from "./ShoppingList.module.css";
 import { useEffect, useState } from "react";
 import { Product } from "../Product/Product";
