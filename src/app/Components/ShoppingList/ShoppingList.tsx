@@ -1,11 +1,11 @@
 "use client";
 
 import { useDeleteProduct } from "@/app/Hooks/useDeleteProduct";
-import styles from "./ShoppingList.module.css";
 import { useUpdateProduct } from "@/app/Hooks/useUpdateProduct";
-import { ChangeEvent, useEffect, useState } from "react";
-import { Product } from "../Product/Product";
 import { useDeleteShoppingList } from "@/app/Hooks/useDeleteShoppingList";
+import styles from "./ShoppingList.module.css";
+import { useEffect, useState } from "react";
+import { Product } from "../Product/Product";
 
 type ShoppingListProps = {
   initialProducts: Product[];
@@ -13,87 +13,99 @@ type ShoppingListProps = {
   deleteList: () => void;
 };
 
-const ShoppingList = ({
-  initialProducts,
-  deleteProduct,
-  deleteList
-}: ShoppingListProps) => {
+const ShoppingList = ({ initialProducts, deleteProduct, deleteList }: ShoppingListProps) => {
   const [isSorted, setIsSorted] = useState(false);
   const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [isAllProductsPurchased, setIsAllProductsPurchased] = useState(false);
+  const [busyIds, setBusyIds] = useState<string[]>([]);
+  const [isClearing, setIsClearing] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleDeleteList = () => {
-    useDeleteShoppingList();
-    deleteList();
+  useEffect(() => setProducts(initialProducts), [initialProducts]);
+
+  const handleDeleteList = async () => {
+    if (isClearing || busyIds.length || products.length === 0) return;
+    if (!window.confirm("Vil du slette hele handlelisten?")) return;
+    setIsClearing(true);
+    setError("");
+    try {
+      await useDeleteShoppingList();
+      deleteList();
+    } catch (err) {
+      console.error("Kunne ikke slette handlelisten:", err);
+      setError("Kunne ikke slette hele listen. Last inn siden på nytt og prøv igjen.");
+    } finally {
+      setIsClearing(false);
+    }
   };
 
-
-  useEffect(() => {
-    setIsAllProductsPurchased(products.every((product) => product.isPurchased));
-  }, [products]);
-
-  useEffect(() => {
-    setProducts(initialProducts);
-  }, [initialProducts]);
-
-  const handleDelete = (productId: string) => {
-    useDeleteProduct(productId);
-    deleteProduct(productId);
+  const handleDelete = async (productId: string) => {
+    if (isClearing || busyIds.includes(productId)) return;
+    setBusyIds((prev) => [...prev, productId]);
+    setError("");
+    try {
+      await useDeleteProduct(productId);
+      deleteProduct(productId);
+    } catch (err) {
+      console.error("Kunne ikke slette produktet:", err);
+      setError("Kunne ikke slette produktet. Prøv igjen.");
+    } finally {
+      setBusyIds((prev) => prev.filter((id) => id !== productId));
+    }
   };
 
-  const handleSortChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIsSorted(e.target.checked);
+  const handlePurchaseChange = async (productId: string, purchased: boolean) => {
+    if (isClearing || busyIds.includes(productId)) return;
+    setBusyIds((prev) => [...prev, productId]);
+    setError("");
+    try {
+      await useUpdateProduct(productId, purchased);
+      setProducts((prev) =>
+        prev.map((product) => product.id === productId
+          ? { ...product, isPurchased: purchased } : product)
+      );
+    } catch (err) {
+      console.error("Kunne ikke oppdatere produktet:", err);
+      setError("Kunne ikke oppdatere produktet. Prøv igjen.");
+    } finally {
+      setBusyIds((prev) => prev.filter((id) => id !== productId));
+    }
   };
 
-  const handlePurchaseChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const productId = e.target.id;
-    const productPurchasedValue = e.target.checked;
+  const visibleProducts = isSorted
+    ? [...products].sort((a, b) => Number(a.isPurchased) - Number(b.isPurchased))
+    : products;
 
-    useUpdateProduct(productId, productPurchasedValue);
-
-    const updatedProducts = products.map((product) =>
-      product.id === productId
-        ? { ...product, isPurchased: productPurchasedValue }
-        : product
-    );
-
-    setProducts(updatedProducts);
-  };
-
-  const sortedPurchasedProducts = [...products].sort((a, b) => {
-    if (a.isPurchased === b.isPurchased) return 0;
-
-    return a.isPurchased === true ? 1 : -1;
-  });
+  const allPurchased = products.length > 0 && products.every((product) => product.isPurchased);
 
   return (
-    <div
-      className={`${styles.shopping_list} ${
-        isAllProductsPurchased &&
-        products.length > 0 &&
-        styles.all_products_purchased
-      }`}
-    >
+    <div className={`${styles.shopping_list} ${allPurchased ? styles.all_products_purchased : ""}`}>
       <div className={styles.list_title}>
         <h1>Handleliste</h1>
         <div className={styles.sort}>
-          <input onChange={handleSortChange} id="sort" type="checkbox" />
+          <input
+            id="sort"
+            type="checkbox"
+            checked={isSorted}
+            onChange={(event) => setIsSorted(event.target.checked)}
+          />
           <label htmlFor="sort">Sorter</label>
         </div>
-                  <button
-            type="button"
-            onClick={handleDeleteList}
-            className={styles.delete_button}
-          >
-            Slett
-          </button>
-
+        <button
+          type="button"
+          onClick={handleDeleteList}
+          className={styles.delete_button}
+          disabled={isClearing || busyIds.length > 0 || products.length === 0}
+        >
+          {isClearing ? "Sletter..." : "Slett"}
+        </button>
       </div>
+      {error && <p role="alert">{error}</p>}
       <ul>
-        {(isSorted ? sortedPurchasedProducts : products).map((product) => (
+        {visibleProducts.map((product) => (
           <Product
             key={product.id}
             product={product}
+            disabled={isClearing || busyIds.includes(product.id)}
             handlePurchaseChange={handlePurchaseChange}
             handleDelete={handleDelete}
           />
