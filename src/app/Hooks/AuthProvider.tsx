@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut, type User } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import db, { auth } from "../Utils/Firestore";
 
 type AuthState = {
@@ -27,19 +27,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       setUser(nextUser);
       setIsValidUser(false);
-      if (!nextUser?.email) {
+      if (!nextUser) {
         setLoading(false);
         return;
       }
       try {
-        const snapshot = await getDocs(collection(db, "validUsers"));
+        const approvalDoc = await getDoc(doc(db, "validUsers", nextUser.uid));
         if (!active || current !== generation) return;
-        const email = nextUser.email.trim().toLowerCase();
-        setIsValidUser(snapshot.docs.some((doc) => {
-          const approvedEmail = doc.data().email;
-          return typeof approvedEmail === "string" &&
-            approvedEmail.trim().toLowerCase() === email;
-        }));
+        setIsValidUser(approvalDoc.exists());
       } catch (error) {
         if (active && current === generation) {
           console.error("Unable to validate user:", error);
