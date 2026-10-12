@@ -10,9 +10,7 @@
   },
   "dependencies": {
     "firebase": "^11.9.1",
-    "next": "15.3.3",
-    "node": "^20.19.5",
-    "nvm": "^0.0.4",
+    "next": "^15.5.27",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -22,7 +20,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.3.3",
+    "eslint-config-next": "^15.5.27",
     "typescript": "^5"
   }
 }
