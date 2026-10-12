@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#2F7A57" />
+    <title>Ingen internettilkobling · Handleliste</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; min-height: 100dvh; display: grid; place-items: center;
+        padding: 24px; background: #F6F8F5; color: #243128;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      main {
+        width: min(100%, 420px); padding: 36px 28px; text-align: center;
+        background: #FFFCF7; border: 1px solid #DCE5DB;
+        border-radius: 18px; box-shadow: 0 8px 24px rgba(30,45,35,.08);
+      }
+      .icon { font-size: 3rem; }
+      h1 { margin: 16px 0 12px; font-size: 1.5rem; }
+      p { line-height: 1.6; color: #66736A; }
+      a {
+        display: inline-block; margin-top: 12px; padding: 12px 20px;
+        border-radius: 10px; color: white; background: #2F7A57;
+        font-weight: 600; text-decoration: none;
+      }
+      a:focus-visible { outline: 3px solid #83B99A; outline-offset: 3px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="icon" aria-hidden="true">🛍️</div>
+      <h1>Du er frakoblet</h1>
+      <p>Handleliste trenger internett for å hente og lagre produkter. Koble til nettet og prøv igjen.</p>
+      <a href="/">Prøv igjen</a>
+    </main>
+  </body>
+</html>
