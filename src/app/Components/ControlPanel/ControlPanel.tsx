@@ -1,9 +1,8 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { type ChangeEvent, type FormEvent, useState } from "react";
 import styles from "./ControlPanel.module.css";
 import { useCreateProduct } from "@/app/Hooks/useCreateProduct";
-import { useDeleteShoppingList } from "@/app/Hooks/useDeleteShoppingList";
 
 type ControlPanelProps = {
   addProduct: (newProduct: Product) => void;
@@ -18,31 +17,27 @@ const ControlPanel = ({ addProduct }: ControlPanelProps) => {
     setProductName(e.target.value);
   };
 
-  const submitProduct = async (e: FormEvent) => {
+  const submitProduct = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!productName) {
+    if (isLoading) return;
+    const name = productName.trim();
+    if (!name) {
       setError("Fyll ut produktnavn feltet.");
       return;
     }
+
     setIsLoading(true);
     setError("");
-
     try {
-      const newProduct = await useCreateProduct(productName);
-
-      if (productName && newProduct?.id) {
-        const productToAdd = {
-          id: newProduct?.id,
-          name: productName,
-          isPurchased: false,
-        };
-        addProduct(productToAdd);
-      }
+      const created = await useCreateProduct(name);
+      addProduct({ id: created.id, name, isPurchased: false });
+      setProductName("");
     } catch (error) {
-      setError("Feilet å lagre produktet: " + error);
+      console.error("Feilet å lagre produktet:", error);
+      setError("Kunne ikke lagre produktet. Prøv igjen.");
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
@@ -57,14 +52,15 @@ const ControlPanel = ({ addProduct }: ControlPanelProps) => {
             placeholder="Produktnavn"
             value={productName}
             onChange={handleInputChange}
+            disabled={isLoading}
           />
-          <button type="submit" className={styles.accept_button}>
+          <button type="submit" className={styles.accept_button} disabled={isLoading} aria-label="Legg til produkt">
             &#9932;
           </button>
         </form>
       </div>
-      <p className={styles.error_messages}>{error}</p>
-      <p className={styles.error_messages}>{isLoading && "Laster..."}</p>
+      <p role="alert" className={styles.error_messages}>{error}</p>
+      <p role="status" className={styles.error_messages}>{isLoading && "Lagrer..."}</p>
     </>
   );
 };
