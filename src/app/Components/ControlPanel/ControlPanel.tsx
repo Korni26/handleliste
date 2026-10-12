@@ -2,7 +2,7 @@
 
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import styles from "./ControlPanel.module.css";
-import { useCreateProduct } from "@/app/Hooks/useCreateProduct";
+import { createProduct } from "@/app/Hooks/createProduct";
 
 type ControlPanelProps = {
   addProduct: (newProduct: Product) => void;
@@ -29,7 +29,7 @@ const ControlPanel = ({ addProduct }: ControlPanelProps) => {
     setIsLoading(true);
     setError("");
     try {
-      const created = await useCreateProduct(name);
+      const created = await createProduct(name);
       addProduct({ id: created.id, name, isPurchased: false });
       setProductName("");
     } catch (error) {
