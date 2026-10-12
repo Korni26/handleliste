@@ -70,10 +70,7 @@ const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteLis
   };
 
   const visibleProducts = isSorted
-    ? [...products].sort((a, b) =>
-        Number(a.isPurchased) - Number(b.isPurchased) ||
-        a.name.localeCompare(b.name, "nb", { sensitivity: "base" })
-      )
+    ? [...products].sort((a, b) => Number(a.isPurchased) - Number(b.isPurchased))
     : products;
 
   const allPurchased = products.length > 0 && products.every((product) => product.isPurchased);
@@ -90,7 +87,7 @@ const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteLis
             checked={isSorted}
             onChange={(event) => setIsSorted(event.target.checked)}
           />
-          <label htmlFor="sort">Sorter A–Å (kjøpte sist)</label>
+          <label htmlFor="sort">Vis ikke-kjøpte først</label>
         </div>
         <button
           type="button"
