@@ -23,6 +23,10 @@ export default function Home() {
     );
   };
 
+  const updateShoppingProduct = (productId: string, isPurchased: boolean) => {
+    setShoppingProducts((prev) => prev.map((product) => product.id === productId ? { ...product, isPurchased } : product));
+  };
+
   const deleteShoppingList = () => {
     setShoppingProducts([]);
   };
@@ -57,6 +61,7 @@ export default function Home() {
           <ShoppingList
             initialProducts={shoppingProducts}
             deleteProduct={deleteShoppingProduct}
+            updateProduct={updateShoppingProduct}
             deleteList={deleteShoppingList}
           />
           <ControlPanel
