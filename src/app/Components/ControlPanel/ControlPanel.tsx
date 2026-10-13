@@ -58,7 +58,7 @@ const ControlPanel = ({ addProduct, listId, listName }: ControlPanelProps) => {
             disabled={isLoading}
           />
           <button type="submit" className={styles.accept_button} disabled={isLoading} aria-label="Legg til produkt">
-            &#9932;
+            +
           </button>
         </form>
       </div>
