@@ -56,3 +56,12 @@
   .sort { font-size: 0.81rem; }
   .delete_button { padding: 0 12px; }
 }
+
+.empty {
+  padding: 26px 20px 30px;
+  margin: 0;
+  text-align: center;
+  color: #66736a;
+  line-height: 1.6;
+  font-size: .95rem;
+}
