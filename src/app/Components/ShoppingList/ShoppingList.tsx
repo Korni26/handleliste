@@ -101,17 +101,21 @@ const ShoppingList = ({ initialProducts, listId, listName, deleteProduct, update
         </button>
       </div>
       {error && <p role="alert">{error}</p>}
-      <ul>
-        {visibleProducts.map((product) => (
-          <Product
-            key={product.id}
-            product={product}
-            disabled={isClearing || busyIds.includes(product.id)}
-            handlePurchaseChange={handlePurchaseChange}
-            handleDelete={handleDelete}
-          />
-        ))}
-      </ul>
+      {visibleProducts.length === 0 ? (
+        <p className={styles.empty}>Denne listen er tom. Legg til noe du trenger!</p>
+      ) : (
+        <ul>
+          {visibleProducts.map((product) => (
+            <Product
+              key={product.id}
+              product={product}
+              disabled={isClearing || busyIds.includes(product.id)}
+              handlePurchaseChange={handlePurchaseChange}
+              handleDelete={handleDelete}
+            />
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
