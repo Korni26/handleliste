@@ -1,7 +1,7 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
-import type { ShoppingListDefinition, ShoppingProduct } from "@/app/Utils/shoppingLists";
+import { LEGACY_LIST_ID, type ShoppingListDefinition, type ShoppingProduct } from "@/app/Utils/shoppingLists";
 import styles from "./ListSelector.module.css";
 
 type ListSelectorProps = {
@@ -11,6 +11,7 @@ type ListSelectorProps = {
   isBusy: boolean;
   onSelect: (id: string) => void;
   onCreate: (name: string) => Promise<void>;
+  onRename: (name: string) => Promise<void>;
   onDelete: () => Promise<void>;
 };
 
@@ -21,12 +22,14 @@ export function ListSelector({
   isBusy,
   onSelect,
   onCreate,
+  onRename,
   onDelete,
 }: ListSelectorProps) {
-  const [isCreating, setIsCreating] = useState(false);
+  const [mode, setMode] = useState<"none" | "create" | "rename">("none");
   const [newName, setNewName] = useState("");
   const [error, setError] = useState("");
   const active = lists.find((list) => list.id === activeListId);
+  const canEdit = !!active && active.id !== LEGACY_LIST_ID;
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -35,17 +38,25 @@ export function ListSelector({
       setError("Skriv inn et listenavn.");
       return;
     }
-    if (lists.some((list) => list.name.toLocaleLowerCase("nb") === name.toLocaleLowerCase("nb"))) {
+    if (lists.some((list) =>
+      list.id !== (mode === "rename" ? activeListId : "") &&
+      list.name.toLocaleLowerCase("nb") === name.toLocaleLowerCase("nb")
+    )) {
       setError("En liste med dette navnet finnes allerede.");
       return;
     }
+
     setError("");
     try {
-      await onCreate(name);
+      if (mode === "rename") {
+        await onRename(name);
+      } else {
+        await onCreate(name);
+      }
       setNewName("");
-      setIsCreating(false);
+      setMode("none");
     } catch {
-      setError("Kunne ikke opprette listen. Prøv igjen.");
+      setError(mode === "rename" ? "Kunne ikke endre listenavnet." : "Kunne ikke opprette listen. Prøv igjen.");
     }
   };
 
@@ -58,11 +69,12 @@ export function ListSelector({
           className={styles.add}
           disabled={isBusy}
           onClick={() => {
-            setIsCreating((current) => !current);
+            setMode((current) => current === "create" ? "none" : "create");
+            setNewName("");
             setError("");
           }}
         >
-          {isCreating ? "Avbryt" : "+ Ny liste"}
+          {mode === "create" ? "Avbryt" : "+ Ny liste"}
         </button>
       </div>
       <div className={styles.tabs} role="group" aria-label="Handlelister">
@@ -72,9 +84,14 @@ export function ListSelector({
             <button
               type="button"
               key={list.id}
+              disabled={isBusy}
               className={list.id === activeListId ? styles.active : styles.tab}
               aria-pressed={list.id === activeListId}
-              onClick={() => onSelect(list.id)}
+              onClick={() => {
+                onSelect(list.id);
+                setMode("none");
+                setError("");
+              }}
             >
               <span>{list.name}</span>
               <span className={styles.count} aria-label={`${remaining} igjen`}>{remaining}</span>
@@ -82,9 +99,9 @@ export function ListSelector({
           );
         })}
       </div>
-      {isCreating && (
+      {mode !== "none" && (
         <form className={styles.createForm} onSubmit={submit}>
-          <label htmlFor="new-list-name">Navn på ny liste</label>
+          <label htmlFor="new-list-name">{mode === "rename" ? "Endre listenavn" : "Navn på ny liste"}</label>
           <div className={styles.createRow}>
             <input
               id="new-list-name"
@@ -92,25 +109,39 @@ export function ListSelector({
               maxLength={32}
               value={newName}
               onChange={(event) => setNewName(event.target.value)}
-              placeholder="F.eks. Ferie"
+              placeholder={mode === "rename" ? "Nytt listenavn" : "F.eks. Dagligvarer"}
               disabled={isBusy}
               autoFocus
             />
             <button type="submit" disabled={isBusy || !newName.trim()}>
-              {isBusy ? "Lagrer..." : "Opprett"}
+              {isBusy ? "Lagrer..." : mode === "rename" ? "Lagre" : "Opprett"}
             </button>
           </div>
         </form>
       )}
-      {active && !active.isDefault && (
-        <button
-          type="button"
-          className={styles.deleteList}
-          disabled={isBusy}
-          onClick={() => { void onDelete(); }}
-        >
-          Slett listen «{active.name}»
-        </button>
+      {canEdit && (
+        <div className={styles.listActions}>
+          <button
+            type="button"
+            className={styles.renameList}
+            disabled={isBusy}
+            onClick={() => {
+              setMode((current) => current === "rename" ? "none" : "rename");
+              setNewName(active.name);
+              setError("");
+            }}
+          >
+            Gi «{active.name}» nytt navn
+          </button>
+          <button
+            type="button"
+            className={styles.deleteList}
+            disabled={isBusy}
+            onClick={() => { void onDelete(); }}
+          >
+            Slett listen «{active.name}»
+          </button>
+        </div>
       )}
       {error && <p className={styles.error} role="alert">{error}</p>}
     </section>
