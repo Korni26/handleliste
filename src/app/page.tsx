@@ -11,65 +11,79 @@ import { Header } from "./Components/Header/Header";
 import { SignInPanel } from "./Components/SIgnInPanel/SignInPanel";
 import { AccessDenied } from "./Components/AccessDenied/AccessDenied";
 import {
-  DEFAULT_LIST_ID,
-  DEFAULT_LISTS,
+  LEGACY_LIST_ID,
   createShoppingList,
+  renameShoppingList,
   deleteCustomShoppingList,
-  getCustomShoppingLists,
+  getShoppingLists,
+  moveLegacyProductsToList,
   productListId,
   type ShoppingListDefinition,
   type ShoppingProduct,
 } from "./Utils/shoppingLists";
 
+const LEGACY_LIST_NAME = "Tidligere produkter";
+
 export default function Home() {
   const [shoppingProducts, setShoppingProducts] = useState<ShoppingProduct[]>([]);
-  const [customLists, setCustomLists] = useState<ShoppingListDefinition[]>([]);
-  const [activeListId, setActiveListId] = useState(DEFAULT_LIST_ID);
+  const [savedLists, setSavedLists] = useState<ShoppingListDefinition[]>([]);
+  const [activeListId, setActiveListId] = useState("");
+  const [moveToListId, setMoveToListId] = useState("");
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isChangingLists, setIsChangingLists] = useState(false);
   const [dataError, setDataError] = useState("");
+  const [listLoadFailed, setListLoadFailed] = useState(false);
   const { user, isValidUser, loading } = useAuth();
 
   useEffect(() => {
     if (loading || !isValidUser) {
       setShoppingProducts([]);
-      setCustomLists([]);
-      setActiveListId(DEFAULT_LIST_ID);
+      setSavedLists([]);
+      setActiveListId("");
       setIsLoadingData(true);
+      setListLoadFailed(false);
       setDataError("");
       return;
     }
 
     let active = true;
     setIsLoadingData(true);
+    setListLoadFailed(false);
     setDataError("");
 
-    // Lists and products are fetched independently so existing groceries
-    // remain visible even if the new Firestore list rules aren't deployed yet.
     Promise.allSettled([
       getDatabaseData("products"),
-      getCustomShoppingLists(),
+      getShoppingLists(),
     ]).then(([productsResult, listsResult]) => {
       if (!active) return;
 
-      if (productsResult.status === "fulfilled" && productsResult.value) {
-        const loadedProducts = productsResult.value as Array<Product & { listId?: string }>;
-        setShoppingProducts(loadedProducts.map((product) => ({
-          id: product.id,
-          name: product.name ?? "",
-          isPurchased: !!product.isPurchased,
-          listId: productListId(product.listId),
-        })));
-      } else {
-        setDataError("Kunne ikke hente produktene. Prøv å laste inn siden på nytt.");
+      // Do not offer destructive list operations until we know the actual list IDs.
+      // Otherwise old products might look unassigned when list rules are missing.
+      if (listsResult.status !== "fulfilled") {
+        setListLoadFailed(true);
+        setDataError("Kunne ikke hente listene fra Firestore. Sjekk tilgangsreglene og last inn siden på nytt.");
+        setIsLoadingData(false);
+        return;
       }
 
-      if (listsResult.status === "fulfilled") {
-        setCustomLists(listsResult.value);
+      const loadedLists = listsResult.value;
+      setSavedLists(loadedLists);
+      const validIds = new Set(loadedLists.map((list) => list.id));
+
+      if (productsResult.status === "fulfilled" && productsResult.value) {
+        const loadedProducts = productsResult.value as Array<Product & { listId?: string }>;
+        setShoppingProducts(loadedProducts.map((product) => {
+          const oldListId = productListId(product.listId);
+          return {
+            id: product.id,
+            name: product.name ?? "",
+            isPurchased: !!product.isPurchased,
+            listId: validIds.has(oldListId) ? oldListId : LEGACY_LIST_ID,
+          };
+        }));
       } else {
-        setDataError((previous) =>
-          previous || "Kunne ikke hente egne lister. Kontroller Firestore-reglene."
-        );
+        setListLoadFailed(true);
+        setDataError("Kunne ikke hente produktene. Last inn siden på nytt og prøv igjen.");
       }
 
       setIsLoadingData(false);
@@ -78,9 +92,15 @@ export default function Home() {
     return () => { active = false; };
   }, [loading, isValidUser]);
 
-  const lists = [...DEFAULT_LISTS, ...customLists];
-  const activeList = lists.find((list) => list.id === activeListId) ?? DEFAULT_LISTS[0];
-  const activeProducts = shoppingProducts.filter((product) => product.listId === activeList.id);
+  const legacyProductsExist = shoppingProducts.some((product) => product.listId === LEGACY_LIST_ID);
+  const lists: ShoppingListDefinition[] = [
+    ...(legacyProductsExist ? [{ id: LEGACY_LIST_ID, name: LEGACY_LIST_NAME }] : []),
+    ...savedLists,
+  ];
+  const activeList = lists.find((list) => list.id === activeListId) ?? lists[0];
+  const activeProducts = activeList
+    ? shoppingProducts.filter((product) => product.listId === activeList.id)
+    : [];
 
   const createList = async (name: string) => {
     if (isChangingLists) return;
@@ -88,15 +108,38 @@ export default function Home() {
     setDataError("");
     try {
       const created = await createShoppingList(name);
-      setCustomLists((previous) => [...previous, created].sort((a, b) => a.name.localeCompare(b.name, "nb")));
+      setSavedLists((previous) =>
+        [...previous, created].sort((a, b) => a.name.localeCompare(b.name, "nb"))
+      );
       setActiveListId(created.id);
+    } catch (error) {
+      console.error("Kunne ikke opprette listen:", error);
+      throw error;
+    } finally {
+      setIsChangingLists(false);
+    }
+  };
+
+  const renameList = async (name: string) => {
+    if (!activeList || activeList.id === LEGACY_LIST_ID || isChangingLists) return;
+    setIsChangingLists(true);
+    setDataError("");
+    try {
+      await renameShoppingList(activeList.id, name);
+      setSavedLists((previous) =>
+        previous.map((list) => list.id === activeList.id ? { ...list, name } : list)
+          .sort((a, b) => a.name.localeCompare(b.name, "nb"))
+      );
+    } catch (error) {
+      console.error("Kunne ikke gi listen nytt navn:", error);
+      throw error;
     } finally {
       setIsChangingLists(false);
     }
   };
 
   const deleteList = async () => {
-    if (activeList.isDefault || isChangingLists) return;
+    if (!activeList || activeList.id === LEGACY_LIST_ID || isChangingLists) return;
     if (!window.confirm(`Slette «${activeList.name}» og alle produktene i listen?`)) return;
 
     setIsChangingLists(true);
@@ -104,11 +147,29 @@ export default function Home() {
     try {
       await deleteCustomShoppingList(activeList.id);
       setShoppingProducts((previous) => previous.filter((product) => product.listId !== activeList.id));
-      setCustomLists((previous) => previous.filter((list) => list.id !== activeList.id));
-      setActiveListId(DEFAULT_LIST_ID);
+      setSavedLists((previous) => previous.filter((list) => list.id !== activeList.id));
+      setActiveListId("");
     } catch (error) {
       console.error("Kunne ikke slette listen:", error);
       setDataError("Kunne ikke slette listen. Last inn siden og prøv igjen.");
+    } finally {
+      setIsChangingLists(false);
+    }
+  };
+
+  const moveLegacy = async () => {
+    if (!savedLists.some((list) => list.id === moveToListId) || isChangingLists) return;
+    setIsChangingLists(true);
+    setDataError("");
+    try {
+      await moveLegacyProductsToList(moveToListId);
+      setShoppingProducts((previous) => previous.map((product) =>
+        product.listId === LEGACY_LIST_ID ? { ...product, listId: moveToListId } : product
+      ));
+      setActiveListId(moveToListId);
+    } catch (error) {
+      console.error("Kunne ikke flytte produktene:", error);
+      setDataError("Kunne ikke flytte produktene. Oppdater siden og prøv igjen.");
     } finally {
       setIsChangingLists(false);
     }
@@ -129,32 +190,68 @@ export default function Home() {
       ) : (
         <>
           {dataError && <p role="alert" className={styles.error}>{dataError}</p>}
-          <ListSelector
-            lists={lists}
-            products={shoppingProducts}
-            activeListId={activeList.id}
-            isBusy={isChangingLists}
-            onSelect={setActiveListId}
-            onCreate={createList}
-            onDelete={deleteList}
-          />
-          <ShoppingList
-            key={activeList.id}
-            initialProducts={activeProducts}
-            listId={activeList.id}
-            listName={activeList.name}
-            deleteProduct={(productId) => setShoppingProducts((previous) => previous.filter((product) => product.id !== productId))}
-            updateProduct={(productId, isPurchased) => setShoppingProducts((previous) =>
-              previous.map((product) => product.id === productId ? { ...product, isPurchased } : product)
-            )}
-            deleteList={() => setShoppingProducts((previous) => previous.filter((product) => product.listId !== activeList.id))}
-          />
-          <ControlPanel
-            key={activeList.id}
-            listId={activeList.id}
-            listName={activeList.name}
-            addProduct={(product) => setShoppingProducts((previous) => [...previous, product])}
-          />
+          {!listLoadFailed && (
+            <>
+              <ListSelector
+                lists={lists}
+                products={shoppingProducts}
+                activeListId={activeList?.id ?? ""}
+                isBusy={isChangingLists}
+                onSelect={setActiveListId}
+                onCreate={createList}
+                onRename={renameList}
+                onDelete={deleteList}
+              />
+              {activeList ? (
+                <>
+                  <ShoppingList
+                    key={`shopping-${activeList.id}`}
+                    initialProducts={activeProducts}
+                    listId={activeList.id}
+                    listName={activeList.name}
+                    deleteProduct={(productId) => setShoppingProducts((previous) => previous.filter((product) => product.id !== productId))}
+                    updateProduct={(productId, isPurchased) => setShoppingProducts((previous) =>
+                      previous.map((product) => product.id === productId ? { ...product, isPurchased } : product)
+                    )}
+                    deleteList={() => setShoppingProducts((previous) => previous.filter((product) => product.listId !== activeList.id))}
+                  />
+                  {activeList.id === LEGACY_LIST_ID ? (
+                    <section className={styles.movePanel}>
+                      <p>Disse produktene ble lagt til før du kunne opprette egne lister. Velg hvor du vil flytte dem.</p>
+                      <div className={styles.moveRow}>
+                        <select
+                          aria-label="Flytt produkter til liste"
+                          value={savedLists.some((list) => list.id === moveToListId) ? moveToListId : ""}
+                          disabled={isChangingLists || savedLists.length === 0}
+                          onChange={(event) => setMoveToListId(event.target.value)}
+                        >
+                          <option value="">Velg liste</option>
+                          {savedLists.map((list) =>
+                            <option key={list.id} value={list.id}>{list.name}</option>
+                          )}
+                        </select>
+                        <button
+                          type="button"
+                          disabled={isChangingLists || !savedLists.some((list) => list.id === moveToListId)}
+                          onClick={() => { void moveLegacy(); }}
+                        >{isChangingLists ? "Flytter..." : "Flytt alle"}</button>
+                      </div>
+                      {savedLists.length === 0 && <p>Opprett først en liste med «+ Ny liste».</p>}
+                    </section>
+                  ) : (
+                    <ControlPanel
+                      key={`control-${activeList.id}`}
+                      listId={activeList.id}
+                      listName={activeList.name}
+                      addProduct={(product) => setShoppingProducts((previous) => [...previous, product])}
+                    />
+                  )}
+                </>
+              ) : (
+                <p className={styles.status}>Du har ingen handlelister ennå. Velg «+ Ny liste» for å lage din første.</p>
+              )}
+            </>
+          )}
         </>
       )}
     </div>
