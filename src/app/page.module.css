@@ -11,3 +11,39 @@
 
 .status { width: min(100%, 640px); margin: 28px auto; color: #66736a; text-align: center; }
 .error { width: min(100%, 640px); padding: 12px 16px; margin: 8px auto; border: 1px solid #e9cece; border-radius: 10px; background: #fff1f1; color: #9d3030; }
+
+.movePanel {
+  width: min(100%, 640px);
+  padding: 18px 20px;
+  margin: 18px auto 0;
+  background: #fffcf7;
+  border: 1px solid #dce5db;
+  border-radius: 18px;
+  color: #3b4d40;
+}
+.movePanel p { line-height: 1.5; margin: 0 0 12px; }
+.moveRow { display: flex; gap: 10px; }
+.moveRow select {
+  min-width: 0;
+  flex: 1;
+  min-height: 46px;
+  padding: 0 12px;
+  background: white;
+  border: 1px solid #bfcec1;
+  border-radius: 10px;
+  color: #243128;
+}
+.moveRow button {
+  min-height: 46px;
+  padding: 0 16px;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  background: #2f7a57;
+  font-weight: 600;
+}
+.moveRow button:disabled { opacity: .6; cursor: not-allowed; }
+@media (max-width: 360px) {
+  .movePanel { padding: 14px; }
+  .moveRow { flex-direction: column; }
+}
