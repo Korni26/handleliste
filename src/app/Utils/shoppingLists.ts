@@ -82,15 +82,19 @@ export async function deleteCustomShoppingList(listId: string): Promise<void> {
   await deleteDoc(doc(db, "shoppingLists", listId));
 }
 
-// Move old products into a real user-created list without losing purchase state.
+// Move products with missing or retired list IDs into a real list, preserving checkmarks.
 export async function moveLegacyProductsToList(listId: string): Promise<void> {
   if (!listId || listId === LEGACY_LIST_ID) {
     throw new Error("Velg en handleliste");
   }
 
-  const snapshot = await getDocs(collection(db, "products"));
+  const [lists, snapshot] = await Promise.all([
+    getShoppingLists(),
+    getDocs(collection(db, "products")),
+  ]);
+  const validIds = new Set(lists.map((list) => list.id));
   const legacyProducts = snapshot.docs.filter(
-    (item) => productListId(item.data().listId) === LEGACY_LIST_ID
+    (item) => !validIds.has(productListId(item.data().listId))
   );
 
   for (let start = 0; start < legacyProducts.length; start += 500) {
