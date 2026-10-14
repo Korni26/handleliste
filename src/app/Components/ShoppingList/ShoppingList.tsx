@@ -9,12 +9,14 @@ import { Product } from "../Product/Product";
 
 type ShoppingListProps = {
   initialProducts: Product[];
+  listId: string;
+  listName: string;
   deleteProduct: (productId: string) => void;
   updateProduct: (productId: string, isPurchased: boolean) => void;
   deleteList: () => void;
 };
 
-const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteList }: ShoppingListProps) => {
+const ShoppingList = ({ initialProducts, listId, listName, deleteProduct, updateProduct, deleteList }: ShoppingListProps) => {
   const [isSorted, setIsSorted] = useState(false);
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [busyIds, setBusyIds] = useState<string[]>([]);
@@ -25,15 +27,15 @@ const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteLis
 
   const handleDeleteList = async () => {
     if (isClearing || busyIds.length || products.length === 0) return;
-    if (!window.confirm("Vil du slette hele handlelisten?")) return;
+    if (!window.confirm(`Vil du fjerne alle produktene fra «${listName}»?`)) return;
     setIsClearing(true);
     setError("");
     try {
-      await deleteShoppingListFromDatabase();
+      await deleteShoppingListFromDatabase(listId);
       deleteList();
     } catch (err) {
       console.error("Kunne ikke slette handlelisten:", err);
-      setError("Kunne ikke slette hele listen. Last inn siden på nytt og prøv igjen.");
+      setError("Kunne ikke tømme listen. Last inn siden på nytt og prøv igjen.");
     } finally {
       setIsClearing(false);
     }
@@ -78,7 +80,7 @@ const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteLis
   return (
     <div className={`${styles.shopping_list} ${allPurchased ? styles.all_products_purchased : ""}`}>
       <div className={styles.list_title}>
-        <h1>Handleliste</h1>
+        <h1>{listName}</h1>
         <p className={styles.count}>{products.filter((product) => !product.isPurchased).length} igjen å handle</p>
         <div className={styles.sort}>
           <input
@@ -95,21 +97,25 @@ const ShoppingList = ({ initialProducts, deleteProduct, updateProduct, deleteLis
           className={styles.delete_button}
           disabled={isClearing || busyIds.length > 0 || products.length === 0}
         >
-          {isClearing ? "Sletter..." : "Slett"}
+          {isClearing ? "Tømmer..." : "Tøm liste"}
         </button>
       </div>
       {error && <p role="alert">{error}</p>}
-      <ul>
-        {visibleProducts.map((product) => (
-          <Product
-            key={product.id}
-            product={product}
-            disabled={isClearing || busyIds.includes(product.id)}
-            handlePurchaseChange={handlePurchaseChange}
-            handleDelete={handleDelete}
-          />
-        ))}
-      </ul>
+      {visibleProducts.length === 0 ? (
+        <p className={styles.empty}>Denne listen er tom. Legg til noe du trenger!</p>
+      ) : (
+        <ul>
+          {visibleProducts.map((product) => (
+            <Product
+              key={product.id}
+              product={product}
+              disabled={isClearing || busyIds.includes(product.id)}
+              handlePurchaseChange={handlePurchaseChange}
+              handleDelete={handleDelete}
+            />
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

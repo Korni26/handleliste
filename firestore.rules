@@ -14,6 +14,22 @@ service cloud.firestore {
       allow list, create, update, delete: if false;
     }
 
+    // Named shopping lists are shared by the same approved users as products.
+    match /shoppingLists/{listId} {
+      allow read, delete: if isApprovedUser();
+      allow create: if isApprovedUser()
+        && request.resource.data.keys().hasOnly(['name', 'createdAt'])
+        && request.resource.data.keys().hasAll(['name'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 32;
+      allow update: if isApprovedUser()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 32;
+    }
+
     match /products/{productId} {
       allow read, write: if isApprovedUser();
     }

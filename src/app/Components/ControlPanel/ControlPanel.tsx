@@ -3,12 +3,15 @@
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import styles from "./ControlPanel.module.css";
 import { createProduct } from "@/app/Hooks/useCreateProduct";
+import type { ShoppingProduct } from "@/app/Utils/shoppingLists";
 
 type ControlPanelProps = {
-  addProduct: (newProduct: Product) => void;
+  addProduct: (newProduct: ShoppingProduct) => void;
+  listId: string;
+  listName: string;
 };
 
-const ControlPanel = ({ addProduct }: ControlPanelProps) => {
+const ControlPanel = ({ addProduct, listId, listName }: ControlPanelProps) => {
   const [productName, setProductName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,8 +32,8 @@ const ControlPanel = ({ addProduct }: ControlPanelProps) => {
     setIsLoading(true);
     setError("");
     try {
-      const created = await createProduct(name);
-      addProduct({ id: created.id, name, isPurchased: false });
+      const created = await createProduct(name, listId);
+      addProduct({ id: created.id, name, isPurchased: false, listId });
       setProductName("");
     } catch (error) {
       console.error("Feilet å lagre produktet:", error);
@@ -44,18 +47,18 @@ const ControlPanel = ({ addProduct }: ControlPanelProps) => {
     <>
       <div className={styles.control_panel}>
         <form onSubmit={submitProduct} className={styles.form}>
-          <label htmlFor="product_input">Legg til et produkt:</label>
+          <label htmlFor="product_input">Legg til i {listName}:</label>
           <input
             maxLength={30}
             id="product_input"
             type="text"
-            placeholder="Produktnavn"
+            placeholder="Hva trenger du?"
             value={productName}
             onChange={handleInputChange}
             disabled={isLoading}
           />
           <button type="submit" className={styles.accept_button} disabled={isLoading} aria-label="Legg til produkt">
-            &#9932;
+            +
           </button>
         </form>
       </div>
